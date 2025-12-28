@@ -2,28 +2,52 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>CYD Perfumería | Asistente Inteligente</title>
+<title>CYD Perfumería | Asistente</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-body { font-family: Arial; background:#f2f2f2; padding:20px; }
+body {
+  font-family: Arial, sans-serif;
+  background:#f2f2f2;
+  padding:20px;
+}
 .card {
-  background:#fff; padding:20px; border-radius:14px;
-  max-width:480px; margin:auto;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  max-width:480px;
+  margin:auto;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+label {
+  margin-top:10px;
+  display:block;
+  font-weight:bold;
 }
 select, button {
-  width:100%; padding:10px; margin-top:8px;
-  border-radius:8px; border:1px solid #ccc;
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #ccc;
 }
 button {
-  background:#111; color:white; font-weight:bold;
+  background:#111;
+  color:white;
+  cursor:pointer;
+}
+.resultado {
+  margin-top:15px;
 }
 .perfume {
-  background:#eee; padding:10px;
-  border-radius:8px; margin-top:10px;
+  background:#eee;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
 }
 .small {
-  font-size:12px; color:#555;
+  font-size:12px;
+  color:#555;
 }
 </style>
 </head>
@@ -34,34 +58,34 @@ button {
 <h2>CYD Perfumería</h2>
 <p class="small">Asistente digital de fragancias</p>
 
-<label>👤 Modo</label>
+<label>Modo</label>
 <select id="modo">
-  <option>Cliente</option>
-  <option>Vendedor</option>
+  <option value="Cliente">Cliente</option>
+  <option value="Vendedor">Vendedor</option>
 </select>
 
-<label>💰 Precio</label>
+<label>Precio</label>
 <select id="precio">
   <option>Económico</option>
   <option>Medio</option>
   <option>Premium</option>
 </select>
 
-<label>🧴 Tipo de piel</label>
+<label>Tipo de piel</label>
 <select id="piel">
   <option>Seca</option>
   <option>Normal</option>
   <option>Grasa</option>
 </select>
 
-<label>🎯 Ocasión</label>
+<label>Ocasión</label>
 <select id="ocasion">
   <option>Diario</option>
   <option>Noche</option>
   <option>Eventos</option>
 </select>
 
-<label>🌿 Estilo</label>
+<label>Estilo</label>
 <select id="estilo">
   <option>Fresco</option>
   <option>Dulce</option>
@@ -69,7 +93,7 @@ button {
   <option>Intenso</option>
 </select>
 
-<label>🏷 Marca</label>
+<label>Marca</label>
 <select id="marca">
   <option>Cualquiera</option>
   <option>Dior</option>
@@ -78,30 +102,54 @@ button {
   <option>Carolina Herrera</option>
 </select>
 
-<button onclick="recomendar()">🔍 Recomendar</button>
+<button onclick="recomendar()">Recomendar</button>
 
-<div id="resultado"></div>
+<div id="resultado" class="resultado"></div>
 </div>
 
 <script>
-let favoritos = JSON.parse(localStorage.getItem("favoritosCYD")) || [];
+let favoritos = [];
 
 function recomendar() {
-  const piel = pielValue();
-  const estilo = val("estilo");
-  const ocasion = val("ocasion");
-  const marca = val("marca");
-  const modo = val("modo");
+  const modo = document.getElementById("modo").value;
+  const piel = document.getElementById("piel").value;
+  const ocasion = document.getElementById("ocasion").value;
+  const estilo = document.getElementById("estilo").value;
+  const marca = document.getElementById("marca").value;
 
-  let duracion = piel === "Seca" ? "8–12h" : piel === "Grasa" ? "4–6h" : "6–8h";
+  let duracion = "6–8 horas";
+  if (piel === "Seca") duracion = "8–12 horas";
+  if (piel === "Grasa") duracion = "4–6 horas";
 
-  let opciones = [
-    `Perfume ${estilo} ideal para ${ocasion}`,
-    `Fragancia balanceada con buena fijación`,
-    `Opción recomendada por clientes CYD`
+  const opciones = [
+    "Fragancia " + estilo + " ideal para " + ocasion,
+    "Perfume equilibrado con buena fijación",
+    "Alternativa recomendada por clientes CYD"
   ];
 
-  let html = `
-    <p><strong>👨‍💼 Asesor CYD:</strong></p>
-    <p>Duración estimada: <strong>${duracion}</strong></p>
-  `
+  let html = "";
+  html += "<p><strong>Asesor CYD:</strong></p>";
+  html += "<p>Duración estimada: <strong>" + duracion + "</strong></p>";
+
+  opciones.forEach(function(op) {
+    html += "<div class='perfume'>" + op + " (" + marca + ")</div>";
+  });
+
+  if (modo === "Vendedor") {
+    html += "<p class='small'>Sugerencia: ofrecer prueba en piel antes de cerrar la venta.</p>";
+  }
+
+  html += "<button onclick='enviarWhatsApp()'>Enviar por WhatsApp</button>";
+
+  document.getElementById("resultado").innerHTML = html;
+}
+
+function enviarWhatsApp() {
+  const texto = "CYD Perfumería recomienda fragancias según tu perfil.";
+  const url = "https://wa.me/?text=" + encodeURIComponent(texto);
+  window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
