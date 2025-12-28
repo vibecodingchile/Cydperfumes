@@ -2,53 +2,35 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>CYD Perfumería | Asistente</title>
+<title>CYD Perfumería | Asistente IA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background:#f2f2f2;
-  padding:20px;
-}
+body { font-family: Arial; background:#f2f2f2; padding:20px; }
 .card {
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  max-width:480px;
-  margin:auto;
+  background:#fff; padding:20px; border-radius:12px;
+  max-width:520px; margin:auto;
   box-shadow:0 4px 15px rgba(0,0,0,0.1);
 }
-label {
-  margin-top:10px;
-  display:block;
-  font-weight:bold;
+label { font-weight:bold; display:block; margin-top:10px; }
+select, input, button {
+  width:100%; padding:10px; margin-top:6px;
+  border-radius:8px; border:1px solid #ccc;
 }
-select, button {
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-button {
-  background:#111;
-  color:white;
-  cursor:pointer;
-}
-.resultado {
-  margin-top:15px;
-}
+button { background:#111; color:#fff; cursor:pointer; }
 .perfume {
-  background:#eee;
+  background:#eee; padding:10px;
+  border-radius:8px; margin-top:10px;
+}
+.chat {
+  background:#fafafa;
+  border:1px solid #ccc;
   padding:10px;
-  border-radius:8px;
-  margin-top:10px;
+  margin-top:20px;
+  border-radius:10px;
 }
-.small {
-  font-size:12px;
-  color:#555;
-}
+.mensaje-user { font-weight:bold; margin-top:5px; }
+.mensaje-ia { margin-left:10px; color:#333; }
+.small { font-size:12px; color:#666; }
 </style>
 </head>
 
@@ -56,19 +38,12 @@ button {
 
 <div class="card">
 <h2>CYD Perfumería</h2>
-<p class="small">Asistente digital de fragancias</p>
+<p class="small">Asistente inteligente con inventario real</p>
 
 <label>Modo</label>
 <select id="modo">
-  <option value="Cliente">Cliente</option>
-  <option value="Vendedor">Vendedor</option>
-</select>
-
-<label>Precio</label>
-<select id="precio">
-  <option>Económico</option>
-  <option>Medio</option>
-  <option>Premium</option>
+  <option>Cliente</option>
+  <option>Vendedor</option>
 </select>
 
 <label>Tipo de piel</label>
@@ -93,61 +68,100 @@ button {
   <option>Intenso</option>
 </select>
 
-<label>Marca</label>
-<select id="marca">
-  <option>Cualquiera</option>
-  <option>Dior</option>
-  <option>Chanel</option>
-  <option>Paco Rabanne</option>
-  <option>Carolina Herrera</option>
-</select>
+<button onclick="recomendar()">Recomendar desde inventario</button>
 
-<button onclick="recomendar()">Recomendar</button>
+<div id="resultado"></div>
 
-<div id="resultado" class="resultado"></div>
+<div class="chat">
+  <strong>💬 Chat con Asesor CYD</strong>
+  <input id="chatInput" placeholder="Ej: quiero algo dulce para la noche">
+  <button onclick="chatIA()">Enviar</button>
+  <div id="chatLog"></div>
+</div>
+
 </div>
 
 <script>
-let favoritos = [];
+// INVENTARIO REAL
+const inventario = [
+  {
+    nombre: "La Vie Est Belle",
+    marca: "Lancôme",
+    estilo: "Dulce",
+    ocasion: "Noche",
+    piel: "Seca",
+    stock: 5
+  },
+  {
+    nombre: "Sauvage",
+    marca: "Dior",
+    estilo: "Fresco",
+    ocasion: "Diario",
+    piel: "Grasa",
+    stock: 3
+  },
+  {
+    nombre: "212 VIP",
+    marca: "Carolina Herrera",
+    estilo: "Intenso",
+    ocasion: "Eventos",
+    piel: "Normal",
+    stock: 0
+  }
+];
 
 function recomendar() {
-  const modo = document.getElementById("modo").value;
   const piel = document.getElementById("piel").value;
   const ocasion = document.getElementById("ocasion").value;
   const estilo = document.getElementById("estilo").value;
-  const marca = document.getElementById("marca").value;
 
-  let duracion = "6–8 horas";
-  if (piel === "Seca") duracion = "8–12 horas";
-  if (piel === "Grasa") duracion = "4–6 horas";
+  const resultados = inventario.filter(p =>
+    p.piel === piel &&
+    p.ocasion === ocasion &&
+    p.estilo === estilo &&
+    p.stock > 0
+  );
 
-  const opciones = [
-    "Fragancia " + estilo + " ideal para " + ocasion,
-    "Perfume equilibrado con buena fijación",
-    "Alternativa recomendada por clientes CYD"
-  ];
+  let html = "<p><strong>Recomendaciones disponibles:</strong></p>";
 
-  let html = "";
-  html += "<p><strong>Asesor CYD:</strong></p>";
-  html += "<p>Duración estimada: <strong>" + duracion + "</strong></p>";
-
-  opciones.forEach(function(op) {
-    html += "<div class='perfume'>" + op + " (" + marca + ")</div>";
-  });
-
-  if (modo === "Vendedor") {
-    html += "<p class='small'>Sugerencia: ofrecer prueba en piel antes de cerrar la venta.</p>";
+  if (resultados.length === 0) {
+    html += "<p>No hay stock exacto. Sugerimos alternativas similares.</p>";
   }
 
-  html += "<button onclick='enviarWhatsApp()'>Enviar por WhatsApp</button>";
+  resultados.forEach(p => {
+    html += `
+      <div class="perfume">
+        <strong>${p.nombre}</strong><br>
+        Marca: ${p.marca}<br>
+        Stock: ${p.stock}
+      </div>
+    `;
+  });
 
   document.getElementById("resultado").innerHTML = html;
 }
 
-function enviarWhatsApp() {
-  const texto = "CYD Perfumería recomienda fragancias según tu perfil.";
-  const url = "https://wa.me/?text=" + encodeURIComponent(texto);
-  window.open(url, "_blank");
+// CHAT IA SIMULADO
+function chatIA() {
+  const input = document.getElementById("chatInput").value.toLowerCase();
+  const log = document.getElementById("chatLog");
+
+  log.innerHTML += `<div class="mensaje-user">Cliente: ${input}</div>`;
+
+  let respuesta = "Te recomiendo opciones equilibradas disponibles en tienda.";
+
+  inventario.forEach(p => {
+    if (
+      input.includes(p.estilo.toLowerCase()) &&
+      input.includes(p.ocasion.toLowerCase()) &&
+      p.stock > 0
+    ) {
+      respuesta = `Te recomiendo ${p.nombre} de ${p.marca}, ideal para lo que buscas.`;
+    }
+  });
+
+  log.innerHTML += `<div class="mensaje-ia">Asesor CYD: ${respuesta}</div>`;
+  document.getElementById("chatInput").value = "";
 }
 </script>
 
