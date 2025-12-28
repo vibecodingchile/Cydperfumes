@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CYD Perfumería - Asistente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial; background:#f5f5f5; padding:20px; }
+    .card { background:white; padding:20px; border-radius:10px; max-width:400px; margin:auto; }
+    select, button { width:100%; padding:10px; margin-top:10px; }
+    #resultado { margin-top:15px; font-weight:bold; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>CYD Perfumería</h2>
+  <p>Encuentra tu perfume ideal</p>
+
+  <label>Precio</label>
+  <select id="precio">
+    <option>Económico</option>
+    <option>Medio</option>
+    <option>Premium</option>
+  </select>
+
+  <label>Tipo de piel</label>
+  <select id="piel">
+    <option>Seca</option>
+    <option>Normal</option>
+    <option>Grasa</option>
+  </select>
+
+  <label>Marca</label>
+  <select id="marca">
+    <option>Cualquiera</option>
+    <option>Dior</option>
+    <option>Chanel</option>
+    <option>Paco Rabanne</option>
+    <option>Carolina Herrera</option>
+  </select>
+
+  <button onclick="recomendar()">Recomendar</button>
+
+  <div id="resultado"></div>
+</div>
+
+<script>
+function recomendar() {
+  const precio = document.getElementById("precio").value;
+  const piel = document.getElementById("piel").value;
+  const marca = document.getElementById("marca").value;
+
+  let recomendacion = "Perfume equilibrado";
+
+  if (piel === "Seca") recomendacion = "Perfumes intensos EDP o Parfum";
+  if (piel === "Grasa") recomendacion = "Perfumes frescos o cítricos EDT";
+
+  document.getElementById("resultado").innerHTML =
+    `Recomendación CYD:<br>
+     Precio: ${precio}<br>
+     Marca: ${marca}<br>
+     Tipo ideal: ${recomendacion}`;
+}
+</script>
+
+</body>
+</html>
