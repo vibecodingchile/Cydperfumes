@@ -5,23 +5,25 @@
 <title>CYD Perfumería | Asistente Inteligente</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body { font-family: Arial; background:#f3f3f3; padding:20px; }
+body { font-family: Arial; background:#f2f2f2; padding:20px; }
 .card {
-  background:white; padding:20px; border-radius:12px;
-  max-width:450px; margin:auto;
-  box-shadow:0 0 10px rgba(0,0,0,0.1);
+  background:#fff; padding:20px; border-radius:14px;
+  max-width:480px; margin:auto;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 select, button {
   width:100%; padding:10px; margin-top:8px;
+  border-radius:8px; border:1px solid #ccc;
 }
 button {
-  background:#111; color:white; border:none;
-  border-radius:8px;
+  background:#111; color:white; font-weight:bold;
 }
-#resultado { margin-top:15px; }
 .perfume {
-  background:#eee; padding:10px; border-radius:8px;
-  margin-top:10px;
+  background:#eee; padding:10px;
+  border-radius:8px; margin-top:10px;
+}
+.small {
+  font-size:12px; color:#555;
 }
 </style>
 </head>
@@ -30,7 +32,13 @@ button {
 
 <div class="card">
 <h2>CYD Perfumería</h2>
-<p>Asistente inteligente de fragancias</p>
+<p class="small">Asistente digital de fragancias</p>
+
+<label>👤 Modo</label>
+<select id="modo">
+  <option>Cliente</option>
+  <option>Vendedor</option>
+</select>
 
 <label>💰 Precio</label>
 <select id="precio">
@@ -76,37 +84,24 @@ button {
 </div>
 
 <script>
+let favoritos = JSON.parse(localStorage.getItem("favoritosCYD")) || [];
+
 function recomendar() {
-  const piel = document.getElementById("piel").value;
-  const estilo = document.getElementById("estilo").value;
-  const ocasion = document.getElementById("ocasion").value;
-  const marca = document.getElementById("marca").value;
+  const piel = pielValue();
+  const estilo = val("estilo");
+  const ocasion = val("ocasion");
+  const marca = val("marca");
+  const modo = val("modo");
 
-  let duracion = "6-8 horas";
-  if (piel === "Seca") duracion = "8-12 horas";
-  if (piel === "Grasa") duracion = "4-6 horas";
+  let duracion = piel === "Seca" ? "8–12h" : piel === "Grasa" ? "4–6h" : "6–8h";
 
-  let perfumes = [
-    "Opción 1: Fragancia " + estilo + " ideal para " + ocasion,
-    "Opción 2: Perfume equilibrado con buena fijación",
-    "Opción 3: Alternativa recomendada por clientes CYD"
+  let opciones = [
+    `Perfume ${estilo} ideal para ${ocasion}`,
+    `Fragancia balanceada con buena fijación`,
+    `Opción recomendada por clientes CYD`
   ];
 
   let html = `
-  <p>👨‍💼 <strong>Asesor CYD:</strong></p>
-  <p>Según tu piel y preferencias, estas son mis recomendaciones:</p>
-  <p>⏱ Duración estimada: <strong>${duracion}</strong></p>
-  `;
-
-  perfumes.forEach(p => {
-    html += `<div class="perfume">${p} (${marca})</div>`;
-  });
-
-  html += `<button onclick="recomendar()">🔄 Quiero otra opción</button>`;
-
-  document.getElementById("resultado").innerHTML = html;
-}
-</script>
-
-</body>
-</html>
+    <p><strong>👨‍💼 Asesor CYD:</strong></p>
+    <p>Duración estimada: <strong>${duracion}</strong></p>
+  `
