@@ -1,66 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>CYD Perfumería - Asistente</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: Arial; background:#f5f5f5; padding:20px; }
-    .card { background:white; padding:20px; border-radius:10px; max-width:400px; margin:auto; }
-    select, button { width:100%; padding:10px; margin-top:10px; }
-    #resultado { margin-top:15px; font-weight:bold; }
-  </style>
+<meta charset="UTF-8">
+<title>CYD Perfumería | Asistente Inteligente</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: Arial; background:#f3f3f3; padding:20px; }
+.card {
+  background:white; padding:20px; border-radius:12px;
+  max-width:450px; margin:auto;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+select, button {
+  width:100%; padding:10px; margin-top:8px;
+}
+button {
+  background:#111; color:white; border:none;
+  border-radius:8px;
+}
+#resultado { margin-top:15px; }
+.perfume {
+  background:#eee; padding:10px; border-radius:8px;
+  margin-top:10px;
+}
+</style>
 </head>
+
 <body>
 
 <div class="card">
-  <h2>CYD Perfumería</h2>
-  <p>Encuentra tu perfume ideal</p>
+<h2>CYD Perfumería</h2>
+<p>Asistente inteligente de fragancias</p>
 
-  <label>Precio</label>
-  <select id="precio">
-    <option>Económico</option>
-    <option>Medio</option>
-    <option>Premium</option>
-  </select>
+<label>💰 Precio</label>
+<select id="precio">
+  <option>Económico</option>
+  <option>Medio</option>
+  <option>Premium</option>
+</select>
 
-  <label>Tipo de piel</label>
-  <select id="piel">
-    <option>Seca</option>
-    <option>Normal</option>
-    <option>Grasa</option>
-  </select>
+<label>🧴 Tipo de piel</label>
+<select id="piel">
+  <option>Seca</option>
+  <option>Normal</option>
+  <option>Grasa</option>
+</select>
 
-  <label>Marca</label>
-  <select id="marca">
-    <option>Cualquiera</option>
-    <option>Dior</option>
-    <option>Chanel</option>
-    <option>Paco Rabanne</option>
-    <option>Carolina Herrera</option>
-  </select>
+<label>🎯 Ocasión</label>
+<select id="ocasion">
+  <option>Diario</option>
+  <option>Noche</option>
+  <option>Eventos</option>
+</select>
 
-  <button onclick="recomendar()">Recomendar</button>
+<label>🌿 Estilo</label>
+<select id="estilo">
+  <option>Fresco</option>
+  <option>Dulce</option>
+  <option>Amaderado</option>
+  <option>Intenso</option>
+</select>
 
-  <div id="resultado"></div>
+<label>🏷 Marca</label>
+<select id="marca">
+  <option>Cualquiera</option>
+  <option>Dior</option>
+  <option>Chanel</option>
+  <option>Paco Rabanne</option>
+  <option>Carolina Herrera</option>
+</select>
+
+<button onclick="recomendar()">🔍 Recomendar</button>
+
+<div id="resultado"></div>
 </div>
 
 <script>
 function recomendar() {
-  const precio = document.getElementById("precio").value;
   const piel = document.getElementById("piel").value;
+  const estilo = document.getElementById("estilo").value;
+  const ocasion = document.getElementById("ocasion").value;
   const marca = document.getElementById("marca").value;
 
-  let recomendacion = "Perfume equilibrado";
+  let duracion = "6-8 horas";
+  if (piel === "Seca") duracion = "8-12 horas";
+  if (piel === "Grasa") duracion = "4-6 horas";
 
-  if (piel === "Seca") recomendacion = "Perfumes intensos EDP o Parfum";
-  if (piel === "Grasa") recomendacion = "Perfumes frescos o cítricos EDT";
+  let perfumes = [
+    "Opción 1: Fragancia " + estilo + " ideal para " + ocasion,
+    "Opción 2: Perfume equilibrado con buena fijación",
+    "Opción 3: Alternativa recomendada por clientes CYD"
+  ];
 
-  document.getElementById("resultado").innerHTML =
-    `Recomendación CYD:<br>
-     Precio: ${precio}<br>
-     Marca: ${marca}<br>
-     Tipo ideal: ${recomendacion}`;
+  let html = `
+  <p>👨‍💼 <strong>Asesor CYD:</strong></p>
+  <p>Según tu piel y preferencias, estas son mis recomendaciones:</p>
+  <p>⏱ Duración estimada: <strong>${duracion}</strong></p>
+  `;
+
+  perfumes.forEach(p => {
+    html += `<div class="perfume">${p} (${marca})</div>`;
+  });
+
+  html += `<button onclick="recomendar()">🔄 Quiero otra opción</button>`;
+
+  document.getElementById("resultado").innerHTML = html;
 }
 </script>
 
